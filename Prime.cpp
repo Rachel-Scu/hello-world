@@ -51,12 +51,14 @@ bool Prime::isPrime(){
 }
 
 int main() {
-  Prime pm(113);
-  Prime sb = pm.sumBit();
-  Prime mb = pm.multiBit();
-  Prime ssb = pm.sqaureSumBit();
-  if(pm.isPrime() && sb.isPrime() && mb.isPrime() && ssb.isPrime()){
-  	cout<<"113 is super prime."<<endl;
-  }//to do sth
-  return 0;
+	for(int i=100;i<=9999;i++){
+		Prime pm(i);
+  		Prime sb = pm.sumBit();
+  		Prime mb = pm.multiBit();
+  		Prime ssb = pm.sqaureSumBit();
+  		if(pm.isPrime() && sb.isPrime() && mb.isPrime() && ssb.isPrime()){
+  				cout<<i<<" is super prime."<<endl;
+  		}//to do sth
+	}
+  	return 0;
 }
