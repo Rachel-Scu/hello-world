@@ -40,8 +40,11 @@ int isprime(int num) {
 }
 
 int main() {
-  if(isprime(113)&&isprime(sum_bit(113))&&isprime(multi_bit(113))&&isprime(square_sum_bit(113))){
-  	printf("113 is super prime.\n");
-  }
+	int i; 
+	for(i=100;i<=9999;i++){
+		if(isprime(i)&&isprime(sum_bit(i))&&isprime(multi_bit(i))&&isprime(square_sum_bit(i))){
+  			printf("%d is super prime.\n",i);
+  		}
+	}
     //to do sth
 }
