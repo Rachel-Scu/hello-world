@@ -14,7 +14,7 @@ int main() {
   std::cout << &dt << std::endl;
   std::cout << &dt1 << std::endl;
   dt.showTime();
-  dt1.showTime();
+  dt1.showMoon();
   return 0;
 }
 DateTime::DateTime()
@@ -29,5 +29,10 @@ DateTime::~DateTime()
 void DateTime::showTime()
 {
   printf("当前时间：%d/%d/%d %d:%d:%d\n", year, month, day, hour, minute, second);
+}
+void DateTime::showMoon(){
+	year = 2020; month = 2; day = 27;
+  	hour = 11; minute = 27; second = 55;
+  	showTime();
 }
  
