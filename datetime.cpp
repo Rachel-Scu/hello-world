@@ -5,22 +5,25 @@ private:
   int hour, minute, second;
 public:
   DateTime();
+  DateTime(int year,int month,int day,int hour, int minute,int  second);
   ~DateTime();
   void showTime();
   void showMoon();  //作业：将当前公历转换为农历显示出来 
 };
 int main() {
-  DateTime dt, dt1;
-  std::cout << &dt << std::endl;
-  std::cout << &dt1 << std::endl;
+  DateTime dt, dt1(2020,3,27,10,40,55);
   dt.showTime();
-  dt1.showMoon();
+  dt1.showTime();
   return 0;
 }
 DateTime::DateTime()
 {
   year = 2020; month = 3; day = 20;
   hour = 11; minute = 27; second = 55;
+}
+DateTime::DateTime(int year,int month,int day,int hour, int minute,int  second){
+	this->year=year;this->month=month;this->day=day;
+	this->hour=hour;this->minute=minute;this->second=second;
 }
 DateTime::~DateTime() 
 {
