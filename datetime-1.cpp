@@ -1,4 +1,5 @@
 #include <iostream>
+#include"mooncal.h"
 using namespace std; 
 class DateTime {
 	private:
@@ -20,10 +21,15 @@ int main() {
 	DateTime dt2(dt), &dt3 = dt;
 	DateTime *dt4 = &dt;
 	dt.showTime();
+	dt.showMoon();
 	dt1.showTime();
+	dt1.showMoon();
 	dt2.showTime();
+	dt2.showMoon();
 	dt3.showTime();
+	dt3.showMoon();
 	dt4->showTime();
+	dt4->showMoon();
 	return 0;
 }
 DateTime::DateTime()
@@ -65,5 +71,24 @@ void DateTime::showTime()
 	printf("当前时间：%d/%d/%d %d:%d:%d\n", year, month, day, hour, minute, second);
 }
 void DateTime::showMoon(){
-	printf("当前时间(农历)：%d/%d/%d %d:%d:%d\n", year, month, day, hour, minute, second);
+	const char *ChDay[] = {"*","初一","初二","初三","初四","初五",
+	                       "初六","初七","初八","初九","初十",
+	                       "十一","十二","十三","十四","十五",
+	                       "十六","十七","十八","十九","二十",
+	                       "廿一","廿二","廿三","廿四","廿五",
+	                       "廿六","廿七","廿八","廿九","三十"
+	                      };
+	const char *ChMonth[] = {"*","正","二","三","四","五","六","七","八","九","十","十一","腊"};
+	char str[13] = "";
+	if (LunarCalendar(year,month,day))
+	{
+		strcat(str,"闰");
+		strcat(str,ChMonth[(LunarCalendarDay & 0x3C0) >> 6]);
+	}
+	else
+		strcat(str,ChMonth[(LunarCalendarDay & 0x3C0) >> 6]);
+	strcat(str,"月");
+	strcat(str,ChDay[LunarCalendarDay & 0x3F]);
+	printf("当前时间(农历)：");
+	puts(str);
 }
