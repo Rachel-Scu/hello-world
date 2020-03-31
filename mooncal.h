@@ -1,11 +1,10 @@
 #ifndef _MOONCAL_H__ 
 #define	_MOONCAL_H__ 
 
-#include <time.h>
 #include <stdio.h>
 #include <string.h>
 unsigned int LunarCalendarDay;
-unsigned int LunarCalendarTable[199] =
+unsigned int LunarCalendarTable[150] =
 {
 	0x04AE53,0x0A5748,0x5526BD,0x0D2650,0x0D9544,0x46AAB9,0x056A4D,0x09AD42,0x24AEB6,0x04AE4A,/*1901-1910*/
 	0x6A4DBE,0x0A4D52,0x0D2546,0x5D52BA,0x0B544E,0x0D6A43,0x296D37,0x095B4B,0x749BC1,0x049754,/*1911-1920*/
@@ -20,6 +19,11 @@ unsigned int LunarCalendarTable[199] =
 	0x4D4AB8,0x0D4A4C,0x0DA541,0x25AAB6,0x056A49,0x7AADBD,0x025D52,0x092D47,0x5C95BA,0x0A954E,/*2001-2010*/
 	0x0B4A43,0x4B5537,0x0AD54A,0x955ABF,0x04BA53,0x0A5B48,0x652BBC,0x052B50,0x0A9345,0x474AB9,/*2011-2020*/
 };
+//使用比特位记录每年的情况
+//0~4 共5bit 春节日份
+//5~6 共2bit 春节月份
+//7~19 共13bit 13个月的大小月情况(如果无闰月，最后位无效)，大月为1,小月为0
+//20~23 共4bit 记录闰月的月份，如果没有闰月为0
 int MonthAdd[12] = {0,31,59,90,120,151,181,212,243,273,304,334};
 int LunarCalendar(int year,int month,int day)
 {
@@ -32,7 +36,7 @@ int LunarCalendar(int year,int month,int day)
 	else
 		Spring_NY = (LunarCalendarTable[year-1901] & 0x001F) - 1 + 31;
 	Sun_NY = MonthAdd[month-1] + day - 1;
-	if ( (!(year % 4)) && (month > 2))
+	if ( ((year%400==0||(year%4==0&&year%100!=0))) && (month > 2))
 		Sun_NY++;
 	//StaticDayCount记录大小月的天数 29 或30
 	//index 记录从哪个月开始来计算。
