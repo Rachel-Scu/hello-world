@@ -4,12 +4,12 @@ using namespace std;
 class DateTime {
 	private:
   		int year,month,day;
-  		int hour,minute,second;
+  		int hour,minute,second; 
 		int seconds;     //从1970年1月1日0时开始计算的秒数 
 	public:
   		DateTime();
   		DateTime(int y, int m, int d, int hour, int minute, int second); 
-  		int GetSeconds();
+  		int GetSeconds();  //得到seconds的值 
   		DateTime(const DateTime &dt);
   		~DateTime();
   		void showTime();
@@ -71,6 +71,7 @@ void DateTime::showTime()
 	printf("当前时间：%d/%d/%d %d:%d:%d\n", year, month, day, hour, minute, second);
 }
 void DateTime::showMoon(){
+	//#include"mooncal.h"
 	const char *ChDay[] = {"*","初一","初二","初三","初四","初五",
 	                       "初六","初七","初八","初九","初十",
 	                       "十一","十二","十三","十四","十五",
