@@ -8,18 +8,18 @@ class Prime {
 	}
 	~Prime() {
 	}
-  	bool isPrime() { 
-  	  //2到number-1的因子
-	  for(int i=2;i<number;i++){
-	  	if(number%i==0)
-	  		return false;
-	  }	 
-  	  return true;
+  	virtual bool isPrime() { 
+  	  //2到number-1的因子 
+  	  for(int i=2;i<number;i++){
+  	  	if(number % i == 0)
+  	  		return false; 
+	  }
+  	  return false;
 	}
   private:
   	const int number;
 }; 
-class PrimeSet : public Prime {
+class PrimeSet: public Prime {
   public:
   	PrimeSet(int size) {
   	  //集合的构造什么？ 
@@ -28,27 +28,25 @@ class PrimeSet : public Prime {
   	  index = 0;
 	}
 	~PrimeSet() {
-  	  for (int i = 0; i < index; ++i)  //销毁对象 
-		delete set[i]; 
-	  delete[] set;
+  	  delete[] set;
 	}
-// 	int count() {
-//  	  int count = 0;
-//  	  for (int i = 0; i < size; i++)
-//  	    if(set[i]->isPrime())
-//  	      count += 1;
-//	  return count; 
-//	}
-	bool add(int n) {
+ 	int count() {
+  	  int count = 0;
+  	  for (int i = 0; i < size; i++)
+  	    if(set[i]->isPrime())
+  	      count += 1;
+	  return count; 
+	}
+	
+	bool add(Prime *p) {  
 	  if(index == size)  return false;
-	  Prime *p = new Prime(n);
 	  set[index] = p;
 	  index += 1;
 	  return true;
 	}
 	bool isAllPrime() {
 	  for(int i = 0; i < index; i++)
-	    if (!set[i]->isPrime())
+	    if (!set[i]->Prime::isPrime())
 	      return false;
 	  return true;
 	} 
@@ -56,6 +54,7 @@ class PrimeSet : public Prime {
   	Prime **set;
 	int size, index;
 };
+
 class SuperPrime : public Prime {
   public:
   	SuperPrime():Prime(0), pset(3) {  //为什么必须有？ 
@@ -63,11 +62,21 @@ class SuperPrime : public Prime {
   	SuperPrime(int n):Prime(n), pset(3) {
 	  // number split into N
 	  int temp = n;
+	  int tsum=0,tmulti=1,tsquaresum=0;
 	  while(temp > 0) {
 	  	int t = temp % 10;
 	  	temp /= 10;
-	  	pset.add(t);  //作业：单个数字为对象？还是和/积/平方和为对象？ 
+	  	//pset.add(t);  //作业：单个数字为对象？还是和/积/平方和为对象？ 
+	  	tsum+=t;
+		tmulti*=t;
+		tsquaresum+=(t*t);
 	  } 
+	  psum=new Prime(tsum);
+	  pset.add(psum);
+	  pmulti=new Prime(tmulti);
+	  pset.add(pmulti);
+	  psquaresum=new Prime(tsquaresum); 
+	  pset.add(psquaresum);
 	}
   	~SuperPrime() {
 	}
@@ -78,12 +87,16 @@ class SuperPrime : public Prime {
 	}
   private:
   	PrimeSet pset;
+  	Prime *psum;
+  	Prime *pmulti;
+  	Prime *psquaresum;
 };
 int main() {
+  SuperPrime p(13);
   SuperPrime sp(113);
-  if (sp.isPrime())
-    std::cout << "113 is SuperPrime" << std::endl;
-  else
-    std::cout << "113 is NOT SuperPrime" << std::endl;
+  PrimeSet set(2);
+  set.add(&sp); 
+  set.add(&p);
+  std::cout << "How Many : " << set.count() << std::endl;
   return 0;
 }
