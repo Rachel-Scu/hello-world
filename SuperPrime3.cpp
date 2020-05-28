@@ -2,32 +2,27 @@
 //重新设计下面的代码，使其可以处理大整数的素数与超级素数
 //同时仔细理解面向对象的编程方式 
 #include <iostream>
+#include<cmath>
 class BigPrime {
 public:
-  BigPrime(int n) : num(n){
+  BigPrime(long long n) : num(n){
   }
   virtual bool isPrime() const {
-    return false;
-  }
-private:
-  const int num;
-}; 
-class BigSuperPrime : public BigPrime {
-public:
-  BigSuperPrime(int n) : BigPrime(n), num(n){
-  }
-  virtual bool isPrime() const {
+  	  for(int i=5;i<sqrt(num);i+=6){
+  	  	if(num%i==0 || num%(i+2)==0)
+  	  		return false; 
+	  }
     return true;
   }
 private:
   const int num;
-};
+}; 
 class Set {
 public:
   Set(int sz);
   ~Set();
   bool add(BigPrime *bp);
-  bool remove(BigPrime *bp);
+//  bool remove(BigPrime *bp);
   int count() const {
   	int ret = 0;
   	for (int i = 0; i < index; i++) {
@@ -36,16 +31,50 @@ public:
 	  }
   	return ret;
   }
-  int sum() const {
-  	return 0;
-  } 
+//  int sum() const {
+//  	return 0;
+//  } 
 private:
   BigPrime **pset;
   int size, index;
 };
+class BigSuperPrime : public BigPrime {
+public:
+  BigSuperPrime(long long n = 0) : BigPrime(n), num(n){
+  	//Split
+  	long long temp = n;
+  	long long tsum=0,tmulti=1,tsquaresum=0;
+	  while(temp > 0) {
+	  	long long t = temp % 10;
+	  	temp /= 10;
+	  	//pset.add(t);  
+	  	tsum+=t;
+		tmulti*=t;
+		tsquaresum+=(t*t);
+	  } 
+	  psum=new BigPrime(tsum);
+	  pset->add(psum);
+	  pmulti=new BigPrime(tmulti);
+	  pset->add(pmulti);
+	  psquaresum=new BigPrime(tsquaresum); 
+	  pset->add(psquaresum);
+  }
+  virtual bool isPrime() const {
+  	if (psum->isPrime()&&pmulti->isPrime()&psquaresum->isPrime())
+	    return true; 
+  	return false;
+  }
+private:
+  long long num;
+  Set *pset;
+  BigPrime *psum;
+  BigPrime *pmulti;
+  BigPrime *psquaresum;
+};
+
 int main() {
   Set set(1000);
-  BigSuperPrime bp(2), bp1(3);
+  BigSuperPrime bp(22222222), bp1(33333333333);
   set.add(&bp);
   set.add(&bp1);
   std::cout << set.count() << std::endl;
