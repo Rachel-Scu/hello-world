@@ -17,11 +17,12 @@ public:
 private:
   const int num;
 }; 
+template<class T> 
 class Set {
 public:
   Set(int sz);
   ~Set();
-  bool add(BigPrime *bp);
+  bool add(T *bp);
 //  bool remove(BigPrime *bp);
   int count() const {
   	int ret = 0;
@@ -66,30 +67,31 @@ public:
   }
 private:
   long long num;
-  Set *pset;
+  Set<BigPrime> *pset;
   BigPrime *psum;
   BigPrime *pmulti;
   BigPrime *psquaresum;
 };
 
 int main() {
-  Set set(1000);
+  Set<BigPrime> set(1000);
   BigSuperPrime bp(22222222), bp1(33333333333);
   set.add(&bp);
   set.add(&bp1);
   std::cout << set.count() << std::endl;
   return 0;
 } 
-
-Set::Set(int sz):size(sz) {
+template<class T>
+Set<T>::Set(int sz):size(sz) {
   index = 0;
   pset = new BigPrime*[size];  //分配存储空间 
 }
-
-Set::~Set() {
+template<class T>
+Set<T>::~Set() {
   delete[] pset;  //回收 
 }
-bool Set::add(BigPrime *bp) {
+template<class T>
+bool Set<T>::add(T *bp) {
   pset[index++] = bp;
   return true;
 }
