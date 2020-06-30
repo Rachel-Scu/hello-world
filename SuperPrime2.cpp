@@ -1,4 +1,4 @@
-//作业：删除多余的集合类，使用继承方法实现相同的功能。 
+//作业：面向对象设计以下框架的代码细节，程序能编译运行得到正确结果 
 #include <iostream>
 class Prime {
   public:
@@ -8,95 +8,143 @@ class Prime {
 	}
 	~Prime() {
 	}
-  	virtual bool isPrime() { 
+  	bool isPrime() { 
   	  //2到number-1的因子 
-  	  for(int i=2;i<number;i++){
-  	  	if(number % i == 0)
-  	  		return false; 
-	  }
-  	  return false;
+  	  for(int i = 2; i < number; i++){
+        if (number % i == 0) 
+            return false;
+      	}
+      return true;
+	}
+	operator int() const{
+		return number;
 	}
   private:
   	const int number;
 }; 
-class PrimeSet: public Prime {
+class PrimeSet {
   public:
   	PrimeSet(int size) {
   	  //集合的构造什么？ 
-  	  set = new Prime*[size];
+  	  N = new Prime*[size];
   	  this->size = size;
   	  index = 0;
 	}
 	~PrimeSet() {
-  	  delete[] set;
+  	  for (int i = 0; i < index; ++i)  //销毁对象 
+		delete N[i]; 
+	  delete[] N;
 	}
- 	int count() {
-  	  int count = 0;
-  	  for (int i = 0; i < size; i++)
-  	    if(set[i]->isPrime())
-  	      count += 1;
-	  return count; 
-	}
-	
-	bool add(Prime *p) {  
+	bool add(int n) {
 	  if(index == size)  return false;
-	  set[index] = p;
+	  Prime *p = new Prime(n);
+	  N[index] = p;
 	  index += 1;
 	  return true;
 	}
 	bool isAllPrime() {
 	  for(int i = 0; i < index; i++)
-	    if (!set[i]->Prime::isPrime())
+	    if (!N[i]->isPrime())
 	      return false;
 	  return true;
 	} 
+	friend class SuperPrime;
   private:
-  	Prime **set;
+  	Prime **N;
 	int size, index;
 };
-
-class SuperPrime : public Prime {
+class SuperPrime {
   public:
-  	SuperPrime():Prime(0), pset(3) {  //为什么必须有？ 
+  	SuperPrime():number(0), pset(3) {  //为什么必须有？ 
   	}
-  	SuperPrime(int n):Prime(n), pset(3) {
-	  // number split into N
-	  int temp = n;
-	  int tsum=0,tmulti=1,tsquaresum=0;
-	  while(temp > 0) {
-	  	int t = temp % 10;
-	  	temp /= 10;
-	  	//pset.add(t);  //作业：单个数字为对象？还是和/积/平方和为对象？ 
-	  	tsum+=t;
-		tmulti*=t;
-		tsquaresum+=(t*t);
-	  } 
-	  psum=new Prime(tsum);
-	  pset.add(psum);
-	  pmulti=new Prime(tmulti);
-	  pset.add(pmulti);
-	  psquaresum=new Prime(tsquaresum); 
-	  pset.add(psquaresum);
+  	SuperPrime(int n):number(n), pset(3) {
+  	  split();  //它就是构造对象 
 	}
   	~SuperPrime() {
 	}
-  	bool isPrime() {   //类/对象的接口，更抽象说是外观 
-	  if (Prime::isPrime() && pset.isAllPrime())
-	    return true; 
-  	  return false;
+  	bool isSuperPrime() {
+  	  //怎么使用pset？ 
+  	  PrimeSet psn(4);
+  	  psn.add(number);
+  	  psn.add(sum());
+  	  psn.add(multi());
+  	  psn.add(squareSum());
+  	  if(psn.isAllPrime())
+  	  	return true;
+  	  else
+  	    return false;
 	}
   private:
+  	const int number;
   	PrimeSet pset;
-  	Prime *psum;
-  	Prime *pmulti;
-  	Prime *psquaresum;
+	void split() {   //工厂方法设计模式 
+	  // number split into N
+	  int temp = number;
+	  while(temp > 0) {
+	  	int n = temp % 10;
+	  	temp /= 10;
+	  	pset.add(n);  //作业：单个数字为对象？还是和/积/平方和为对象？ 
+	  } 
+	}
+	int sum() {
+	  int s=0;
+	  for(int i=0;i<pset.index;i++){
+	  	s+=*(pset.N[i]);  //此处要在Prime类里重载（） 
+	  }	
+	  return s;
+	}
+	int multi() {
+	  int mul=1;
+	  for(int i=0;i<pset.index;i++){
+	  	mul*=*(pset.N[i]);
+	  }
+	  return mul;
+	}
+	int squareSum() {
+	  int ss=0;
+	  for(int i=0;i<pset.index;i++){
+	  	ss=ss+(*(pset.N[i]))*(*(pset.N[i]));
+	  }
+	  return ss;
+	}
+};
+class SuperPrimeSet {
+  public:
+  	SuperPrimeSet(int from,int to) {
+  	  size = to - from;
+  	  for (int i = from; i < to; i++)
+  	    set[i-from] = new SuperPrime(i);
+  	    
+	}
+  	~SuperPrimeSet() {
+  	  for(int i = 0; i < size; i++)
+  	    delete set[i];
+	}
+  	int count() {
+  	  int count = 0;
+  	  for (int i = 0; i < size; i++)
+  	    if(set[i]->isSuperPrime())
+  	      count += 1;
+	  return count; 
+	}
+  	int sum() {
+  	  int sum = 0;
+  	  /*
+  	  for (int i = 0; i < size; i++)
+  	    if(set[i].isSuperPrime())
+  	      sum += set[i];
+  	      */ 
+	  return sum; 
+	}
+  private:
+  	SuperPrime **set;
+  	int size, index;
 };
 int main() {
-  SuperPrime p(13);
   SuperPrime sp(113);
-  PrimeSet set(2);
-  set.add(&sp); 
-  set.add(&p);
-  std::cout << "How Many : " << set.count() << std::endl;
+  if (sp.isSuperPrime())
+    std::cout << "113 is SuperPrime" << std::endl;
+  else
+    std::cout << "113 is NOT SuperPrime" << std::endl;
   return 0;
 }
